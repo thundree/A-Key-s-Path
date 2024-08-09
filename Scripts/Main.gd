@@ -1,139 +1,75 @@
-extends Node2D
+extends Node
 
-# Screens
-onready var Options = $Options
-onready var Credits = $Credits
-onready var MainMenu = $MainMenu
-onready var Levels = $Levels
+enum {MAIN, LEVELS, OPTIONS, CREDITS}
+
+var screen_pos = [Vector2.ZERO, Vector2.UP, Vector2.LEFT, Vector2.RIGHT]
+var current_screen = MAIN
+
 # Menu navigation
-onready var StartButton = $MainMenu/MainMenuContainer/CenterContainer/VBoxContainer/Start
-onready var QuitButton = $MainMenu/MainMenuContainer/CenterContainer2/Quit
-onready var OptionsButton = $MainMenu/MainMenuContainer/CenterContainer/VBoxContainer/HBoxContainer/Options
-onready var CreditsButton = $MainMenu/MainMenuContainer/CenterContainer/VBoxContainer/HBoxContainer/Credits
-onready var OptionsBackButton = $Options/VBoxContainer2/MarginContainer/HBoxContainer/OptionsBack
-onready var CreditsBackButton = $Credits/VBoxContainer/MarginContainer/HBoxContainer/CreditsBack
-onready var LevelsBackButton = $Levels/VBoxContainer/CenterContainer/LevelsBack
-# Sound options
-onready var SFXSlider = $Options/VBoxContainer2/CenterContainer/VBoxContainer/Sound/SFX/SFXSlider
-onready var SFXLabel = $Options/VBoxContainer2/CenterContainer/VBoxContainer/Sound/SFX/Number
-onready var MusicSlider = $Options/VBoxContainer2/CenterContainer/VBoxContainer/Sound/Music/MusicSlider
-onready var MusicLabel = $Options/VBoxContainer2/CenterContainer/VBoxContainer/Sound/Music/Number
-# Display options
-onready var FullscreenCheckButton = $Options/VBoxContainer2/CenterContainer/VBoxContainer/Display/FullscreenCheckButton
-onready var ScreenshakeCheckButton = $Options/VBoxContainer2/CenterContainer/VBoxContainer/Display/ScreenshakeCheckButton
+onready var _LevelsMenu: Control = $LevelsMenu
 
-# Level variables
-export(Array, NodePath) var LevelButtons
-export(Array, String, FILE, "*.tscn") var LevelPaths
+onready var _StartButton = $MainMenu/VBoxContainer/Start
+onready var _OptionsButton = $MainMenu/VBoxContainer/HBoxContainer/Options
+onready var _CreditsButton = $MainMenu/VBoxContainer/HBoxContainer/Credits
+
+onready var _OptionsBackButton = $OptionsMenu/OptionsBack
+onready var _CreditsBackButton = $CreditsMenu/CreditsBack
+onready var _LevelsBackButton = $LevelsMenu/LevelsBack
+
+onready var _QuitButton = $MainMenu/Quit
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	StartButton.grab_focus()
+	# Connect every button
+	_StartButton.connect("pressed", self, "travel_to_screen", [LEVELS, _LevelsMenu.level_buttons.front()])
+	_OptionsButton.connect("pressed", self, "travel_to_screen", [OPTIONS, _OptionsBackButton])
+	_CreditsButton.connect("pressed", self, "travel_to_screen", [CREDITS, _CreditsBackButton])
 	
-	set_slider(
-		SFXSlider,
-		SFXLabel,
-		Global.sfx_volume
-	)
-	set_slider(
-		MusicSlider,
-		MusicLabel,
-		Global.music_volume
-	)
+	_OptionsBackButton.connect("pressed", self, "back")
+	_CreditsBackButton.connect("pressed", self, "back")
+	_LevelsBackButton.connect("pressed", self, "back")
 	
-	FullscreenCheckButton.pressed = OS.window_fullscreen
-	ScreenshakeCheckButton.pressed = Global.screenshake
+	_QuitButton.connect("pressed",self, "try_quit")
 	
-	unlock_levels()
-	
-	if Global.show_levels:
-		$Camera2D.position = Vector2(160,-96)
-		LevelsBackButton.grab_focus()
-		Global.show_levels = false
+	_StartButton.grab_focus()
 	
 	if OS.has_feature("HTML5"):
-		QuitButton.hide()
+		_QuitButton.hide()
+	
+	Global._Music.change_music("Background_ambiance", 1.0)
 
 func _input(event):
 	if event.is_action_pressed("fullscreen"):
-		yield(get_tree(), "idle_frame")
-		FullscreenCheckButton.pressed = OS.window_fullscreen
-	if event.is_action_pressed("quit"):
-		$QuitConfirmationDialog.call_deferred("show_modal")
-
-func set_slider(slider: Node, label: Node, value: float):
-	if slider.value != value:
-		slider.value = value
-	label.text = str(value*100)
-
-func change_screen(pos: Vector2):
-	var tween = $Tween
-	if !tween.is_active():
-		tween.interpolate_property($Camera2D, "position",
-			$Camera2D.position, pos, 0.2)
-		tween.start()
-		
-func unlock_levels():
-	for i in range(LevelButtons.size()):
-		var _button = get_node(LevelButtons[i])
-		if i > Global.max_unlocked_level:
-			_button.disabled = true
-		if i < LevelPaths.size():
-			_button.connect("pressed", self, "_on_LevelButton_pressed", [LevelPaths[i]])
-
-func _on_Start_pressed():
-	change_screen(Vector2(160,-96))
-	LevelsBackButton.grab_focus()
-
-func _on_Quit_pressed():
-	$QuitConfirmationDialog.show_modal()
-
-func _on_Options_pressed():
-	change_screen(Vector2(-160,92))
-	OptionsBackButton.grab_focus()
-
-func _on_Credits_pressed():
-	change_screen(Vector2(480,92))
-	CreditsBackButton.grab_focus()
-
-func _on_OptionsBack_pressed():
-	change_screen(Vector2(160,92))
-	StartButton.grab_focus()
+		pass
 	
-func _on_CreditsBack_pressed():
-	change_screen(Vector2(160,92))
-	StartButton.grab_focus()
+	if event.is_action_pressed("ui_cancel"):
+		if current_screen == MAIN:
+			try_quit()
+		else:
+			back()
 
-func _on_LevelsBack_pressed():
-	change_screen(Vector2(160,92))
-	StartButton.grab_focus()
+func back():
+	travel_to_screen(MAIN)
+	_StartButton.grab_focus()
 
-func _on_SFXSlider_value_changed(value):
-	set_slider(
-		SFXSlider,
-		SFXLabel,
-		value
-	)
-	Global.set_volume(Global.SFX, value)
+func travel_to_screen(new_screen: int, focus_button: Control = null):
+	if new_screen > 3:
+		return
+	
+	current_screen = new_screen
+	var tween = $Tween
+	tween.remove($Camera2D)
+	tween.interpolate_property(
+		$Camera2D, "position",
+		$Camera2D.position, 
+		screen_pos[current_screen]*Vector2(320, 180), 
+		0.5, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+	if !tween.is_active():
+		tween.start()
+	
+	if focus_button:
+		focus_button.grab_focus()
 
-func _on_MusicSlider_value_changed(value):
-	set_slider(
-		MusicSlider,
-		MusicLabel,
-		value
-	)
-	Global.set_volume(Global.MUSIC, value)
-
-func _on_CheckButton_toggled(button_pressed):
-	OS.window_fullscreen = button_pressed
-
-func _on_ScreenshakeCheckButton_toggled(button_pressed):
-	Global.screenshake = button_pressed
-
-func _on_LevelButton_pressed(level_path: String = "menu"):
-	print(level_path)
-	Global.set_transition()
-	Global.goto_scene(level_path)
-
-func _on_QuitConfirmationDialog_confirmed():
+func try_quit():
 	get_tree().quit()
+

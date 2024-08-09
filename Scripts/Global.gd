@@ -1,88 +1,124 @@
 extends Node
 
-# warning-ignore:unused_signal
-signal change_scene_ready
+# Controls
+enum Controls {JUMP, LEFT, RIGHT}
+var active_controls: Array = [
+	true,
+	true,
+	true
+]
 
-var paused = false
-var show_levels = false
-
+# Sounds
 enum {MASTER, SFX, MUSIC}
 
-export(int) var max_unlocked_level = 0
-export(float, 0.0, 1.0) var sfx_volume
-export(float, 0.0, 1.0) var music_volume
-var screenshake = true
+export(String, FILE, "*.json") var save_path: String = "res://save.json"
+export(String, FILE, "*.tscn") var default_path = "res://Scenes/Main.tscn"
+export(Array, String, FILE, "*.tscn") var level_paths = [
+	"res://Scenes/Levels/Tutorial_1.tscn",
+	"res://Scenes/Levels/Tutorial_2.tscn",
+	"res://Scenes/Levels/Level_1.tscn"
+]
+export var levels_unlocked: int = 1
+export(NodePath) var transition_screen_path = "OverlayLayer/SceneTransition"
 
-onready var TransitionPlayer: AnimationPlayer = $TransitionLayer/TransitionPlayer
-onready var Transitions: Array = $TransitionLayer/Transitions.get_children()
-var current_transition = "down"
+var current_level: int = 0
+var current_checkpoint: Vector2 = Vector2.ZERO
+var volumes: Array = [100, 70, 70] setget set_volumes
+var fullscreen: bool = false setget set_fullscreen
+var screenshake: bool = true setget set_screenshake
 
-func _ready():
-	$HUD/Pause.hide()
-	
-	set_volume(SFX, 0.5)
-	set_volume(MUSIC, 0.5)
-	set_transition()
+onready var _TransitionScreen = get_node_or_null(transition_screen_path)
+onready var _Shaker: Shaker = $Shaker
+onready var _Music: MusicManager = $MusicManager
 
-func _input(event):
+
+func _ready() -> void:
+	_Music.musics = {
+		"Part1_intro": preload("res://Assets/Music/reflexions-part1-in.ogg"),
+		"Part1_loop": preload("res://Assets/Music/reflexions-part1.ogg"),
+		"Part2_intro": preload("res://Assets/Music/reflexions-part2-in.ogg"),
+		"Part2_loop": preload("res://Assets/Music/reflexions-part2.ogg"),
+		"Part2_outro": preload("res://Assets/Music/reflexions-part2-out.ogg"),
+		
+		"Background_ambiance": preload("res://Assets/Sounds/background_ambiance.ogg")
+	}
+
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("fullscreen"):
-		OS.window_fullscreen = !OS.window_fullscreen
+		set_fullscreen(not fullscreen)
 
-func set_volume(bus: int, volume_scale: float):
-	var volume = linear2db(volume_scale)
-	match bus:
-		SFX:
-			sfx_volume = volume_scale
-			AudioServer.set_bus_volume_db(SFX, volume)
-		MUSIC:
-			music_volume = volume_scale
-			AudioServer.set_bus_volume_db(MUSIC, volume)
+#################### Level handling ####################
+# Workflow: 
+# | get_next_level
+# | unlock_level
+# | goto_level - either level is valid or sends back to the main menu
 
-func set_transition(id: int = 0, time: float = 1.0, direction: String = "down"):
-	for i in range(Transitions.size()):
-		if i == id:
-			Transitions[i].show()
-		else:
-			Transitions[i].hide()
-	# Set transition speed
-	if time != 0.0:
-		TransitionPlayer.playback_speed = 1/time
-	# Set transition direction
-	match direction:
-		"left","right","up","down":
-			current_transition = direction
-		_:
-			current_transition = "down"
+func is_level_valid(level: int)->bool:
+	return level < level_paths.size()
 
-func goto_scene(path: String = ""):
-# warning-ignore:return_value_discarded
+func get_next_level()->int:
+	return current_level + 1
+
+# Behavior for invalid values: 
+# returns an empty string if the level is outside of existing values
+func get_level_path(level: int)->String:
+	if is_level_valid(level):
+		return level_paths[level]
+	return ""
+
+# Behavior for invalid values: 
+# doesn't unlock any new levels if the world or level is outside of existing values
+func unlock_level(level: int):
+	if is_level_valid(level):
+		levels_unlocked = level+1
+
+func goto_level(level: int):
+	current_level = level
+	goto_scene(get_level_path(level))
+
+func goto_scene(scene_path: String, transition_time: float = 0.5):
+	# If no path has been given, replace it with default path
+	if scene_path == "":
+		scene_path = default_path
 	
-	TransitionPlayer.play(current_transition)
-	yield(self, "change_scene_ready")
-	match path:
-		"menu","":
-			get_tree().change_scene("res://Scenes/Main.tscn")
-		"levels":
-			show_levels = true
-			get_tree().change_scene("res://Scenes/Main.tscn")
-		_:
-# warning-ignore:return_value_discarded
-			get_tree().change_scene(path)
+	print("Loading scene %s"%scene_path)
+	# If a TransitionScreen is available, do a transition
+	if _TransitionScreen:
+		_TransitionScreen.transition_to_scene(scene_path, transition_time)
+	# Else just load the next scene
+	else:
+		get_tree().change_scene(scene_path)
 
-func switch_paused():
-	paused = !paused
-	$HUD/Pause.visible = paused
-	get_tree().paused = paused
 
-func _on_Continue_pressed():
-	paused = false
-	$HUD/Pause.visible = false
-	get_tree().paused = false
+#################### Options handling ####################
 
-func _on_BackToMenu_pressed():
-	paused = false
-	$HUD/Pause.visible = false
-	get_tree().paused = false
-	
-	set_transition()
-	goto_scene("levels")
+func get_volume_linear(bus: int)->float:
+	return db2linear(AudioServer.get_bus_volume_db(bus))*100
+
+func set_volume_linear(bus: int, volume_scale: float):
+	AudioServer.set_bus_volume_db(bus, linear2db(volume_scale/100))
+
+func set_volumes(new_volumes: Array):
+	volumes = new_volumes
+	for i in volumes.size():
+		set_volume_linear(i, volumes[i])
+
+func set_fullscreen(state: bool):
+	OS.window_fullscreen = state
+	fullscreen = state
+
+func set_screenshake(state: bool):
+	_Shaker.set_active(state)
+	screenshake = state
+
+
+#################### Helper Functions ####################
+
+func create_at(scene: PackedScene, pos: Vector2, parent: Node = self)->Node:
+	var new_scene: Node2D = scene.instance()
+	if new_scene:
+		parent.add_child(new_scene)
+		new_scene.set_as_toplevel(true)
+		new_scene.position = pos
+		
+	return new_scene

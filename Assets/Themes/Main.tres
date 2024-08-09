@@ -1,143 +1,64 @@
-[gd_resource type="Theme" load_steps=27 format=2]
+[gd_resource type="Theme" load_steps=30 format=2]
 
-[ext_resource path="res://Assets/Sprites/UI/theme-Sheet.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Themes/resources/button/focus.tres" type="StyleBox" id=1]
+[ext_resource path="res://Assets/Themes/resources/button/pressed.tres" type="StyleBox" id=2]
 [ext_resource path="res://Assets/Fonts/base_font.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Assets/Themes/resources/button/normal.tres" type="StyleBox" id=4]
+[ext_resource path="res://Assets/Themes/resources/button/disabled.tres" type="StyleBox" id=5]
+[ext_resource path="res://Assets/Themes/resources/button/hover.tres" type="StyleBox" id=6]
 [ext_resource path="res://Assets/Fonts/small_font.tres" type="DynamicFont" id=7]
+[ext_resource path="res://Assets/Themes/resources/check_button/on.tres" type="Texture" id=8]
+[ext_resource path="res://Assets/Themes/resources/check_button/on_disabled.tres" type="Texture" id=9]
+[ext_resource path="res://Assets/Themes/resources/check_button/off_disabled.tres" type="Texture" id=10]
+[ext_resource path="res://Assets/Themes/resources/check_button/off.tres" type="Texture" id=11]
+[ext_resource path="res://Assets/Themes/resources/scroll_bar/grabber_pressed.tres" type="StyleBox" id=12]
+[ext_resource path="res://Assets/Themes/resources/scroll_bar/scroll_focus.tres" type="StyleBox" id=13]
+[ext_resource path="res://Assets/Themes/resources/scroll_bar/scroll.tres" type="StyleBox" id=14]
+[ext_resource path="res://Assets/Themes/resources/scroll_bar/grabber_highlight.tres" type="StyleBox" id=15]
+[ext_resource path="res://Assets/Themes/resources/scroll_bar/grabber.tres" type="StyleBox" id=16]
+[ext_resource path="res://Assets/Themes/resources/slider/slider.tres" type="StyleBox" id=17]
+[ext_resource path="res://Assets/Themes/resources/slider/grabber_highlight.tres" type="Texture" id=18]
+[ext_resource path="res://Assets/Themes/resources/slider/grabber_disabled.tres" type="Texture" id=19]
+[ext_resource path="res://Assets/Themes/resources/slider/grabber.tres" type="Texture" id=20]
 
-[sub_resource type="StyleBoxTexture" id=1]
-texture = ExtResource( 1 )
-region_rect = Rect2( 16, 0, 16, 16 )
-margin_left = 3.3719
-margin_right = 3.25483
-margin_top = 3.08429
-margin_bottom = 3.08123
+[sub_resource type="StyleBoxEmpty" id=1]
 
-[sub_resource type="StyleBoxTexture" id=2]
-texture = ExtResource( 1 )
-region_rect = Rect2( 32, 0, 16, 16 )
-margin_left = 3.3719
-margin_right = 3.25483
-margin_top = 3.08429
-margin_bottom = 3.08123
+[sub_resource type="StyleBoxFlat" id=2]
+content_margin_left = 1.0
+content_margin_right = 1.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color( 1, 1, 1, 0 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 0, 1 )
+corner_detail = 1
 
-[sub_resource type="StyleBoxTexture" id=3]
-texture = ExtResource( 1 )
-region_rect = Rect2( 48, 0, 16, 16 )
-margin_left = 3.3719
-margin_right = 3.25483
-margin_top = 3.08429
-margin_bottom = 3.08123
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 1, 1, 1, 0.498039 )
+border_color = Color( 1, 1, 0, 1 )
 
-[sub_resource type="StyleBoxTexture" id=4]
-texture = ExtResource( 1 )
-region_rect = Rect2( 64, 0, 16, 16 )
-margin_left = 3.3719
-margin_right = 3.25483
-margin_top = 3.08429
-margin_bottom = 3.08123
+[sub_resource type="StyleBoxEmpty" id=4]
 
-[sub_resource type="StyleBoxTexture" id=5]
-texture = ExtResource( 1 )
-region_rect = Rect2( 80, 0, 16, 16 )
-margin_left = 3.3719
-margin_right = 3.25483
-margin_top = 3.08429
-margin_bottom = 3.08123
+[sub_resource type="StyleBoxEmpty" id=5]
 
-[sub_resource type="AtlasTexture" id=6]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 48, 24, 16 )
+[sub_resource type="StyleBoxEmpty" id=6]
 
 [sub_resource type="AtlasTexture" id=7]
-atlas = ExtResource( 1 )
-region = Rect2( 24, 48, 24, 16 )
+region = Rect2( 80, 48, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=8]
-atlas = ExtResource( 1 )
-region = Rect2( 48, 48, 24, 16 )
+region = Rect2( 64, 48, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 1 )
-region = Rect2( 72, 48, 24, 16 )
-
-[sub_resource type="StyleBoxEmpty" id=10]
-
-[sub_resource type="AtlasTexture" id=11]
-atlas = ExtResource( 1 )
-region = Rect2( 52, 33, 8, 14 )
-
-[sub_resource type="AtlasTexture" id=12]
-atlas = ExtResource( 1 )
-region = Rect2( 84, 33, 8, 14 )
-
-[sub_resource type="AtlasTexture" id=13]
-atlas = ExtResource( 1 )
-region = Rect2( 68, 33, 8, 14 )
-
-[sub_resource type="StyleBoxTexture" id=14]
-texture = ExtResource( 1 )
-region_rect = Rect2( 16, 32, 16, 16 )
-margin_left = 2.0562
-margin_right = 2.0562
-margin_top = 2.18471
-margin_bottom = 1.92768
-
-[sub_resource type="StyleBoxTexture" id=15]
-texture = ExtResource( 1 )
-region_rect = Rect2( 48, 16, 16, 16 )
-margin_left = 12.0882
-margin_right = 11.834
-margin_top = 4.04383
-margin_bottom = 4.08567
-
-[sub_resource type="StyleBoxTexture" id=16]
-texture = ExtResource( 1 )
-region_rect = Rect2( 64, 16, 16, 16 )
-margin_left = 12.0882
-margin_right = 11.7055
-margin_top = 4.04383
-margin_bottom = 4.08567
-
-[sub_resource type="StyleBoxTexture" id=17]
-texture = ExtResource( 1 )
-region_rect = Rect2( 80, 16, 16, 16 )
-margin_left = 10.7595
-margin_right = 10.8751
-margin_top = 5.20642
-margin_bottom = 5.24825
-
-[sub_resource type="StyleBoxTexture" id=18]
-texture = ExtResource( 1 )
-region_rect = Rect2( 16, 16, 16, 16 )
-margin_left = 10.783
-margin_right = 11.0295
-margin_top = 2.04108
-margin_bottom = 2.0562
-
-[sub_resource type="StyleBoxTexture" id=19]
-texture = ExtResource( 1 )
-region_rect = Rect2( 32, 16, 16, 16 )
-margin_left = 11.04
-margin_right = 10.901
-margin_top = 2.04108
-margin_bottom = 2.0562
-
-[sub_resource type="AtlasTexture" id=20]
-region = Rect2( 80, 64, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=21]
-region = Rect2( 64, 64, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=22]
-region = Rect2( 0, 0, 16, 32 )
-
-[sub_resource type="StyleBoxTexture" id=23]
-texture = SubResource( 22 )
+[sub_resource type="StyleBoxTexture" id=9]
 region_rect = Rect2( 0, 0, 16, 32 )
 margin_left = 2.3355
 margin_right = 2.0562
 margin_top = 29.7346
-margin_bottom = 14.9023
+margin_bottom = 14.0
+expand_margin_top = 16.0
 
 [resource]
 default_font = ExtResource( 7 )
@@ -147,60 +68,70 @@ Button/colors/font_color_hover = Color( 0, 0, 0, 1 )
 Button/colors/font_color_pressed = Color( 0, 0, 0, 1 )
 Button/constants/hseparation = 2
 Button/fonts/font = ExtResource( 3 )
-Button/styles/disabled = SubResource( 1 )
-Button/styles/focus = SubResource( 2 )
-Button/styles/hover = SubResource( 3 )
-Button/styles/normal = SubResource( 4 )
-Button/styles/pressed = SubResource( 5 )
-CheckButton/colors/font_color = Color( 0, 0, 0, 1 )
+Button/styles/disabled = ExtResource( 5 )
+Button/styles/focus = ExtResource( 1 )
+Button/styles/hover = ExtResource( 6 )
+Button/styles/normal = ExtResource( 4 )
+Button/styles/pressed = ExtResource( 2 )
+CheckButton/colors/font_color = Color( 1, 1, 1, 1 )
 CheckButton/colors/font_color_disabled = Color( 1, 1, 1, 0.2 )
-CheckButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
-CheckButton/colors/font_color_hover_pressed = Color( 0, 0, 0, 1 )
-CheckButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+CheckButton/colors/font_color_hover = Color( 1, 1, 1, 1 )
+CheckButton/colors/font_color_hover_pressed = Color( 1, 1, 1, 1 )
+CheckButton/colors/font_color_pressed = Color( 1, 1, 1, 1 )
 CheckButton/constants/check_vadjust = 0
 CheckButton/constants/hseparation = 0
 CheckButton/fonts/font = null
-CheckButton/icons/off = SubResource( 6 )
-CheckButton/icons/off_disabled = SubResource( 7 )
-CheckButton/icons/on = SubResource( 8 )
-CheckButton/icons/on_disabled = SubResource( 9 )
-CheckButton/styles/disabled = SubResource( 10 )
-CheckButton/styles/focus = SubResource( 10 )
-CheckButton/styles/hover = SubResource( 10 )
-CheckButton/styles/hover_pressed = SubResource( 10 )
-CheckButton/styles/normal = SubResource( 10 )
-CheckButton/styles/pressed = SubResource( 10 )
-HSlider/icons/grabber = SubResource( 11 )
-HSlider/icons/grabber_disabled = SubResource( 12 )
-HSlider/icons/grabber_highlight = SubResource( 13 )
+CheckButton/icons/off = ExtResource( 11 )
+CheckButton/icons/off_disabled = ExtResource( 10 )
+CheckButton/icons/on = ExtResource( 8 )
+CheckButton/icons/on_disabled = ExtResource( 9 )
+CheckButton/styles/disabled = SubResource( 1 )
+CheckButton/styles/focus = SubResource( 2 )
+CheckButton/styles/hover = SubResource( 3 )
+CheckButton/styles/hover_pressed = SubResource( 3 )
+CheckButton/styles/normal = SubResource( 4 )
+CheckButton/styles/pressed = SubResource( 5 )
+HScrollBar/icons/ = null
+HScrollBar/icons/decrement = null
+HScrollBar/icons/decrement_highlight = null
+HScrollBar/icons/increment = null
+HScrollBar/icons/increment_highlight = null
+HScrollBar/styles/grabber = ExtResource( 16 )
+HScrollBar/styles/grabber_highlight = ExtResource( 15 )
+HScrollBar/styles/grabber_pressed = ExtResource( 12 )
+HScrollBar/styles/scroll = ExtResource( 14 )
+HScrollBar/styles/scroll_focus = ExtResource( 13 )
+HSlider/icons/grabber = ExtResource( 20 )
+HSlider/icons/grabber_disabled = ExtResource( 19 )
+HSlider/icons/grabber_highlight = ExtResource( 18 )
 HSlider/icons/tick = null
-HSlider/styles/grabber_area = SubResource( 10 )
-HSlider/styles/grabber_area_highlight = SubResource( 10 )
-HSlider/styles/slider = SubResource( 14 )
+HSlider/styles/grabber_area = SubResource( 6 )
+HSlider/styles/grabber_area_highlight = SubResource( 6 )
+HSlider/styles/slider = ExtResource( 17 )
 Label/colors/font_color = Color( 1, 1, 1, 1 )
-Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 1 )
 Label/colors/font_outline_modulate = Color( 1, 1, 1, 1 )
 Label/constants/line_spacing = 3
 Label/constants/shadow_as_outline = 0
 Label/constants/shadow_offset_x = 0
-Label/constants/shadow_offset_y = 1
+Label/constants/shadow_offset_y = 0
 Label/fonts/font = ExtResource( 3 )
 Label/styles/normal = null
 VScrollBar/icons/decrement = null
 VScrollBar/icons/decrement_highlight = null
 VScrollBar/icons/increment = null
 VScrollBar/icons/increment_highlight = null
-VScrollBar/styles/grabber = SubResource( 15 )
-VScrollBar/styles/grabber_highlight = SubResource( 16 )
-VScrollBar/styles/grabber_pressed = SubResource( 17 )
-VScrollBar/styles/scroll = SubResource( 18 )
-VScrollBar/styles/scroll_focus = SubResource( 19 )
+VScrollBar/styles/grabber = ExtResource( 16 )
+VScrollBar/styles/grabber_highlight = ExtResource( 15 )
+VScrollBar/styles/grabber_pressed = ExtResource( 12 )
+VScrollBar/styles/scroll = ExtResource( 14 )
+VScrollBar/styles/scroll_focus = ExtResource( 13 )
 WindowDialog/colors/title_color = Color( 0, 0, 0, 1 )
-WindowDialog/constants/close_h_ofs = 18
-WindowDialog/constants/close_v_ofs = 0
+WindowDialog/constants/close_h_ofs = 17
+WindowDialog/constants/close_v_ofs = 15
 WindowDialog/constants/scaleborder_size = 0
-WindowDialog/constants/title_height = -20
+WindowDialog/constants/title_height = 16
 WindowDialog/fonts/title_font = ExtResource( 3 )
-WindowDialog/icons/close = SubResource( 20 )
-WindowDialog/icons/close_highlight = SubResource( 21 )
-WindowDialog/styles/panel = SubResource( 23 )
+WindowDialog/icons/close = SubResource( 7 )
+WindowDialog/icons/close_highlight = SubResource( 8 )
+WindowDialog/styles/panel = SubResource( 9 )
